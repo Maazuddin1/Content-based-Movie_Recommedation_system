@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        header {
+            background-color: #3e8e41;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #3e8e41;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2d6a29;
+        }
+
+        .recommendations {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendations h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recommendations li span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .error-message {
+            background-color: #ffcccb;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            color: #d8000c;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Movie Recommendation System</h1>
+</header>
+
+<div class="container">
+    <div class="form-container">
+        <h2>Get Movie Recommendations</h2>
+        <p>Enter a movie title below, and we will suggest similar movies for you!</p>
+
+        <form action="/" method="POST">
+            <label for="movie_title">Movie Title:</label>
+            <input type="text" id="movie_title" name="movie_title" required placeholder="e.g., The Dark Knight">
+            <button type="submit">Get Recommendations</button>
+        </form>
+    </div>
+
+    <!-- Display Error if no recommendations are found -->
+    {% if not recommendations %}
+        <div class="error-message">
+            <strong>No recommendations found. Please try a different movie title.</strong>
+        </div>
+    {% endif %}
+
+    <!-- Display Recommendations -->
+    {% if recommendations %}
+        <div class="recommendations">
+            <h2>Recommendations for "{{ matched_title }}"</h2>
+            <ul>
+                {% for movie in recommendations %}
+                    <li>
+                        <div>
+                            <strong>{{ movie['title'] }}</strong>
+                        </div>
+                        <div>
+                            <span>{{ movie['similarity'] }}% match</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
