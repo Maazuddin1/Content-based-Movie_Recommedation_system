@@ -1,6 +1,6 @@
 # Movie Recommendation System
 
-## 🎥 Watch the Demo(click image below👇)
+## 🎥 Watch the Demo👇
 
 ![Watch on YouTube|Movie_recommendation_system](https://www.youtube.com/watch?v=FWnURzv_P0Q)
 
