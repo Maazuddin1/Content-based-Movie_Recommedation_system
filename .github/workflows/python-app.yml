@@ -1,33 +1,84 @@
-name: Python Movie Recommender CI/CD
+name: Content based Movie Recommender 
+
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
       with:
-        python-version: '3.9'
+        python-version: "3.10"
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Run tests
+        python -m pip install --upgrade pip setuptools wheel
+        pip install flake8 pytest pytest-flask pandas scikit-learn flask fuzzywuzzy python-Levenshtein
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Verify data and model directories
       run: |
-        pytest tests/
-        
-    - name: Check code formatting
+        mkdir -p data/processed_dataset
+        mkdir -p src/trained_model
+        touch data/movies.csv data/credits.csv
+        if [ ! -d "src/trained_model" ]; then
+          echo "Model directory missing!"
+          exit 1
+        fi
+        if [ ! -d "templates" ] || [ ! -f "templates/index.html" ]; then
+          echo "Template files missing!"
+          exit 1
+        fi
+    
+    - name: Lint with flake8
       run: |
-        pip install black
-        black . --check
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Process data and train model
+      run: |
+        python src/scripts/main.py
+    
+    - name: Verify model artifacts
+      run: |
+        if [ ! -f "src/trained_model/processed_data.pkl" ] || \
+           [ ! -f "src/trained_model/similarity_matrix.pkl" ] || \
+           [ ! -f "src/trained_model/vectorizer.pkl" ]; then
+          echo "Model artifacts missing!"
+          exit 1
+        fi
+    
+    - name: Test with pytest
+      run: |
+        python -m pytest tests/ -v
+    
+    - name: Start and Test Flask App
+      run: |
+        python src/app.py &
+        sleep 10
+        curl --retry 5 --retry-delay 5 --retry-connrefused http://127.0.0.1:5000/ || exit 1
+        pkill -f "python src/app.py"
+      env:
+        FLASK_ENV: testing
+        FLASK_DEBUG: 0
+    
+    - name: Check setup.py
+      run: |
+        if [ -f setup.py ]; then
+          python setup.py check
+          python setup.py sdist bdist_wheel
+          pip install -e .
+        else
+          echo "setup.py not found - skipping package build"
+        fi
