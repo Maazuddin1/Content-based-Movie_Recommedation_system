@@ -2,8 +2,7 @@
 
 ## 🎥 Watch the Demo(click image below👇)
 
-[![Watch on YouTube](https://img.youtube.com/vi/NcmXkE907io/0.jpg)](https://www.youtube.com/watch?v=NcmXkE907io)
-https://youtu.be/FWnURzv_P0Q
+[![Watch on YouTube](https://www.youtube.com/watch?v=FWnURzv_P0Q)
 
 ## Overview
 The **Movie Recommendation System** is a Python-based project designed to recommend movies to users based on content similarity. Using natural language processing and machine learning techniques, this system analyzes movie metadata to provide tailored recommendations.
