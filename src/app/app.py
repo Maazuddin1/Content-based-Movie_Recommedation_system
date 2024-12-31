@@ -6,7 +6,7 @@ project_root = Path(__file__).resolve().parents[2]
 sys.path.append(str(project_root))
 from src.scripts.recommender import MovieRecommender
 # app.py (Flask backend)
-app = Flask(__name__,template_folder='../templates')
+app = Flask(__name__,template_folder='src/templates')
 
 recommender = MovieRecommender(model_dir='src/trained_model')
 
@@ -23,5 +23,5 @@ def home():
     return render_template('index.html', recommendations=recommendations, matched_title=matched_title)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
 
