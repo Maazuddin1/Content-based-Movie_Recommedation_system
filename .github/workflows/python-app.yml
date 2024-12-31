@@ -36,7 +36,7 @@ jobs:
           echo "Model directory missing!"
           exit 1
         fi
-        if [ ! -d "templates" ] || [ ! -f "templates/index.html" ]; then
+        if [ ! -d "src/templates" ] || [ ! -f "src/templates/index.html" ]; then
           echo "Template files missing!"
           exit 1
         fi
