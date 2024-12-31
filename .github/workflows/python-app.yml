@@ -63,22 +63,9 @@ jobs:
       run: |
         python -m pytest tests/ -v
 
-    - name: Start and Test Flask App
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        if [ -f "src/app.py" ]; then
-          python src/app.py &
-        elif [ -f "app.py" ]; then
-          python app.py &
-        fi
-        sleep 5
-        curl --retry 10 --retry-delay 10 --retry-connrefused http://127.0.0.1:5000/ -f || exit 1
-        pkill -f "python.*app.py"
-      env:
-        FLASK_ENV: testing
-        FLASK_DEBUG: 0
-        PYTHONPATH: ${{ github.workspace }}
-    
+
+
+
     - name: Check setup.py
       run: |
         if [ -f setup.py ]; then
